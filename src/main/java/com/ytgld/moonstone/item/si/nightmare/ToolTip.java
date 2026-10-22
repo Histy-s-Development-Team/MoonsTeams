@@ -2,6 +2,7 @@ package com.ytgld.moonstone.item.si.nightmare;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.ytgld.moonstone.event.NewEvent;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ToolTip implements ClientTooltipComponent, TooltipComponent {
+    private static final int CJK_GLYPH_WIDTH = 9;
     private final AllTip allTip;
     private final ItemStack stack;
 
@@ -32,7 +34,22 @@ public class ToolTip implements ClientTooltipComponent, TooltipComponent {
 
     @Override
     public int getWidth(@NotNull Font font) {
-        return this.backgroundWidth();
+        return Math.max(this.backgroundWidth(), this.textWidth(font));
+    }
+
+    public static boolean useCjkLayout() {
+        return "zh_cn".equals(Minecraft.getInstance().getLanguageManager().getSelected());
+    }
+
+    private int textWidth(Font font) {
+        int width = font.width(Component.translatable("tooltip.moonstone.abyss_blessing"));
+        Map<Integer, Component> stringMap = allTip.tooltip();
+        if (stringMap != null) {
+            for (Component component : stringMap.values()) {
+                width = Math.max(width, font.width(component));
+            }
+        }
+        return width;
     }
 
     private int backgroundWidth() {
@@ -65,7 +82,7 @@ public class ToolTip implements ClientTooltipComponent, TooltipComponent {
         }
     }
     private void renderSlot(Font font, int x, int y, GuiGraphics guiGraphics, int ss, int yOFfSize) {
-        drString(font, x, y, guiGraphics, ss, yOFfSize, 255, 1, Component.literal("深渊的赐福："));
+        drString(font, x, y, guiGraphics, ss, yOFfSize, 255, 1, Component.translatable("tooltip.moonstone.abyss_blessing"));
         for (int i = 0; i < 10; i++) {
             drString(font, x, y, guiGraphics, ss, yOFfSize, 100 - i * 10, 1 + i / 25f, Component.empty());
         }
@@ -88,26 +105,33 @@ public class ToolTip implements ClientTooltipComponent, TooltipComponent {
                 return Optional.empty();
             }, Style.EMPTY);
 
+            boolean cjk = useCjkLayout();
+            int cursorX = 0;
             for (int j = 0; j < chars.size(); j++) {
                 Component character = chars.get(j);
                 int charWidth = font.width(character);
-                float angle = (frameCounter % 360 + j * 10) * (float) Math.PI / 180;
+                int glyphX = cjk ? j * charWidth : cursorX;
+                cursorX += charWidth;
+                float step = cjk ? j : glyphX / (float) CJK_GLYPH_WIDTH;
+                float angle = (frameCounter % 360 + step * 10) * (float) Math.PI / 180;
                 float scale = size + 0.1f * (float) Math.sin(angle);
                 float offsetX = (float) Math.sin(angle) * 0.65f;
                 float offsetY = (float) Math.cos(angle) * 0.65f;
+                float pivotX = x + glyphX + (cjk ? 0 : charWidth / 2f);
+                float pivotY = y + yOFfSize + (cjk ? 0 : font.lineHeight / 2f);
 
                 poseStack.pushPose();
-                poseStack.translate(x + j * charWidth, y + yOFfSize, 0);
+                poseStack.translate(pivotX, pivotY, 0);
                 poseStack.translate(offsetX, offsetY, 0);
                 poseStack.scale(scale, scale, 0);
-                poseStack.translate(-x - j * charWidth, -(y + yOFfSize), 0);
-                int b = j * 22;
+                poseStack.translate(-pivotX, -pivotY, 0);
+                int b = (int) (step * 22);
                 if (b > 255) {
                     b = 255;
                 }
 
                 guiGraphics.drawString(font, character,
-                        (int) (x + j * charWidth + offsetX),
+                        (int) (x + glyphX + offsetX),
                         (int) (y + yOFfSize + offsetY),
                         ARGB.color(a, 255, b / 4, b),
                         false);

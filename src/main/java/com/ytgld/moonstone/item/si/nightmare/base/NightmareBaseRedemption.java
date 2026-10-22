@@ -46,8 +46,8 @@ public class NightmareBaseRedemption extends NightmareBase implements AllTip {
     @Override
     public Map<Integer, Component> tooltip() {
         Map<Integer, Component> map = new HashMap<>();
-        map.put(1, Component.literal("主啊 请赐予我力量"));
-        map.put(2, Component.literal("增加十的伤害 生命 护甲"));
+        map.put(1, Component.translatable("item.nightmare_base_redemption.blessing.1"));
+        map.put(2, Component.translatable("item.nightmare_base_redemption.blessing.2"));
         return map;
     }
 

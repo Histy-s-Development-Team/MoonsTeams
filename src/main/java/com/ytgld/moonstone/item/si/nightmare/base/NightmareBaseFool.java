@@ -64,8 +64,8 @@ public class NightmareBaseFool extends NightmareBase implements AllTip {
     @Override
     public Map<Integer, Component> tooltip() {
         Map<Integer, Component> map = new HashMap<>();
-        map.put(1, Component.literal("你似乎得到了两级的时运加成"));
-        map.put(2, Component.literal("你似乎得到了两级的抢夺加成"));
+        map.put(1, Component.translatable("item.nightmare_base_fool.blessing.1"));
+        map.put(2, Component.translatable("item.nightmare_base_fool.blessing.2"));
         return map;
     }
 

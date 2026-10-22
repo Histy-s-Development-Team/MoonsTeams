@@ -1,6 +1,7 @@
 package com.ytgld.moonstone;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.ytgld.moonstone.datagen.ENUSLanguageProvider;
 import com.ytgld.moonstone.datagen.ZHCNLanguageProvider;
 import com.ytgld.moonstone.enttiy.EntityTs;
 import com.ytgld.moonstone.enttiy.render.*;
@@ -110,5 +111,6 @@ public class MoonstoneClient {
         DataGenerator gen = event.getGenerator();
         PackOutput packOutput = gen.getPackOutput();
         gen.addProvider(event.includeClient(), new ZHCNLanguageProvider(packOutput));
+        gen.addProvider(event.includeClient(), new ENUSLanguageProvider(packOutput));
     }
 }

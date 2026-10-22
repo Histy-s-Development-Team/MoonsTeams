@@ -41,8 +41,8 @@ public class NightmareBaseInsight extends NightmareBase implements AllTip {
     @Override
     public Map<Integer, Component> tooltip() {
         Map<Integer, Component> map = new HashMap<>();
-        map.put(1, Component.literal("你感受到了另类的气息"));
-        map.put(2, Component.literal("增加百分之百经验掉落"));
+        map.put(1, Component.translatable("item.nightmare_base_insight.blessing.1"));
+        map.put(2, Component.translatable("item.nightmare_base_insight.blessing.2"));
         return map;
     }
 

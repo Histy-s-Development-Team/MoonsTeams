@@ -80,8 +80,8 @@ public class NightmareBaseItemReversal extends NightmareBase implements AllTip {
     @Override
     public Map<Integer, Component> tooltip() {
         Map<Integer, Component> map = new HashMap<>();
-        map.put(1, Component.literal("轮回之路注定坎坷") );
-        map.put(2, Component.literal("复活时给予十秒无敌") );
+        map.put(1, Component.translatable("item.nightmare_base_reversal.blessing.1"));
+        map.put(2, Component.translatable("item.nightmare_base_reversal.blessing.2"));
         return map;
     }
 

@@ -181,8 +181,8 @@ public class NightmareBaseStone extends NightmareBase implements AllTip {
     @Override
     public Map<Integer, Component> tooltip() {
         Map<Integer, Component> map = new HashMap<>();
-        map.put(1, Component.literal("这是试炼  磨练你的意志"));
-        map.put(2, Component.literal("生命值越低 各方面属性越高"));
+        map.put(1, Component.translatable("item.nightmare_base_stone.blessing.1"));
+        map.put(2, Component.translatable("item.nightmare_base_stone.blessing.2"));
         return map;
     }
 

@@ -24,14 +24,14 @@ public abstract class LanguageProviderBase extends LanguageProvider {
         add(toolTipBase, firstLine);
 
         for (int i = 0; i < additionalLines.length; i++) {
-            add(id + toolTipBase + "." + (i + 1) , additionalLines[i]);
+            add(toolTipBase + "." + (i + 1), additionalLines[i]);
         }
     }
 
     public void addCurioLang(String unique, String identifiervalue, String modifiervalue) {
         add("curios.identifier." + unique, identifiervalue);
         if(modifiervalue != null) {
-            add("curios.modifier." + unique, modifiervalue);
+            add("curios.modifiers." + unique, modifiervalue);
         }
     }
     public void addCurioLang(String unique, String identifiervalue) {
@@ -40,6 +40,13 @@ public abstract class LanguageProviderBase extends LanguageProvider {
 
     protected <T extends EntityType<?>> void addEntityType(DeferredHolder<EntityType<?>, T> entityTypeTDeferredHolder, String lang) {
         add(entityTypeTDeferredHolder.get(), lang);
+    }
+
+    public void addAdvancement(String id, String title, String desc) {
+        var base = "advancements.tooltip." + id + ".";
+
+        add(base + "hand", title);
+        add(base + "text", desc);
     }
 
 }
