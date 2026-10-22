@@ -43,10 +43,10 @@ public class NightmareBaseBlackEye extends NightmareBase implements AllTip {
     }
 
     @Override
-    public Map<Integer, String> tooltip() {
-        Map<Integer, String> map = new HashMap<>();
-        map.put(1, "带上它 你将免疫黑暗");
-        map.put(2, "带上它 你将免疫失明");
+    public Map<Integer, Component> tooltip() {
+        Map<Integer, Component> map = new HashMap<>();
+        map.put(1, Component.literal("带上它 你将免疫黑暗"));
+        map.put(2, Component.literal("带上它 你将免疫失明"));
         return map;
     }
 

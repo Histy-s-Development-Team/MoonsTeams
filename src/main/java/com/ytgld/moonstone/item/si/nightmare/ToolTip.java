@@ -5,11 +5,16 @@ import com.ytgld.moonstone.event.NewEvent;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ToolTip implements ClientTooltipComponent, TooltipComponent {
     private final AllTip allTip;
@@ -60,42 +65,49 @@ public class ToolTip implements ClientTooltipComponent, TooltipComponent {
         }
     }
     private void renderSlot(Font font, int x, int y, GuiGraphics guiGraphics, int ss, int yOFfSize) {
-        drString(font, x, y, guiGraphics, ss, yOFfSize, 255, 1, "深渊的赐福：");
+        drString(font, x, y, guiGraphics, ss, yOFfSize, 255, 1, Component.literal("深渊的赐福："));
         for (int i = 0; i < 10; i++) {
-            drString(font, x, y, guiGraphics, ss, yOFfSize, 100 - i * 10, 1 + i / 25f, "");
+            drString(font, x, y, guiGraphics, ss, yOFfSize, 100 - i * 10, 1 + i / 25f, Component.empty());
         }
     }
 
-    private void drString(Font font, int x, int y, GuiGraphics guiGraphics, int i, int yOFfSize, int a, float size, String hand) {
+    private void drString(Font font, int x, int y, GuiGraphics guiGraphics, int i, int yOFfSize, int a, float size, Component hand) {
         i--;
         int frameCounter = (int) NewEvent.time;
-        Map<Integer, String> stringMap = allTip.tooltip();
+        Map<Integer, Component> stringMap = allTip.tooltip();
         PoseStack poseStack = guiGraphics.pose();
         guiGraphics.drawString(font, hand, x, y, ARGB.color(255, 255, 50, 50), false);
         poseStack.pushPose();
         if (stringMap != null) {
             Integer integer = stringMap.keySet().stream().toList().get(i);
-            String string = stringMap.get(integer);
+            Component component = stringMap.get(integer);
 
-            for (int j = 0; j < string.length(); j++) {
-                char character = string.charAt(j);
+            List<Component> chars = new ArrayList<>();
+            component.visit((style, text) -> {
+                text.codePoints().forEach(cp -> chars.add(Component.literal(Character.toString(cp)).withStyle(style)));
+                return Optional.empty();
+            }, Style.EMPTY);
+
+            for (int j = 0; j < chars.size(); j++) {
+                Component character = chars.get(j);
+                int charWidth = font.width(character);
                 float angle = (frameCounter % 360 + j * 10) * (float) Math.PI / 180;
                 float scale = size + 0.1f * (float) Math.sin(angle);
                 float offsetX = (float) Math.sin(angle) * 0.65f;
                 float offsetY = (float) Math.cos(angle) * 0.65f;
 
                 poseStack.pushPose();
-                poseStack.translate(x + j * font.width(String.valueOf(character)), y + yOFfSize,0);
-                poseStack.translate(offsetX, offsetY,0);
-                poseStack.scale(scale, scale,0);
-                poseStack.translate(-x - j * font.width(String.valueOf(character)), -(y + yOFfSize),0);
+                poseStack.translate(x + j * charWidth, y + yOFfSize, 0);
+                poseStack.translate(offsetX, offsetY, 0);
+                poseStack.scale(scale, scale, 0);
+                poseStack.translate(-x - j * charWidth, -(y + yOFfSize), 0);
                 int b = j * 22;
                 if (b > 255) {
                     b = 255;
                 }
 
-                guiGraphics.drawString(font, String.valueOf(character),
-                        (int) (x + j * font.width(String.valueOf(character)) + offsetX),
+                guiGraphics.drawString(font, character,
+                        (int) (x + j * charWidth + offsetX),
                         (int) (y + yOFfSize + offsetY),
                         ARGB.color(a, 255, b / 4, b),
                         false);

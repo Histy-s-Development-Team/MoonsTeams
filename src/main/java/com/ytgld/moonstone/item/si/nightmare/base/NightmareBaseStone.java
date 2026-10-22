@@ -179,10 +179,10 @@ public class NightmareBaseStone extends NightmareBase implements AllTip {
     }
 
     @Override
-    public Map<Integer, String> tooltip() {
-        Map<Integer, String> map = new HashMap<>();
-        map.put(1, "这是试炼  磨练你的意志");
-        map.put(2, "生命值越低 各方面属性越高");
+    public Map<Integer, Component> tooltip() {
+        Map<Integer, Component> map = new HashMap<>();
+        map.put(1, Component.literal("这是试炼  磨练你的意志"));
+        map.put(2, Component.literal("生命值越低 各方面属性越高"));
         return map;
     }
 
